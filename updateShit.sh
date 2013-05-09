@@ -15,21 +15,28 @@ FILES="/home/pkirkpat/.bashrc
 /home/pkirkpat/.ssh/authorized_keys
 /home/pkirkpat/.ssh/config"
 
-PORT="-P 20110"
-IDENT="/home/pkirkpat/.ssh/identity.bbs"
+SSH="-e \"ssh -p 20110\""
+OPTS="-avz --progress"
 
-for host in ${MACHINES}
-do
-    echo ${host}
-    for each in ${FILES}
+CHECK=`ssh-add -l`
+
+if [ $? -eq 0 ]
+then
+    for host in ${MACHINES}
     do
-	case "$host" in
-	    dmzshell*) COMMAND="scp ${PORT} ${IDENT} ${each} ${host}.lcsee.wvu.edu:~/" ;;
-	    *) COMMAND="scp ${IDENT} ${each} ${host}.lcsee.wvu.edu:~/" ;;
-	esac
+	echo ${host}
+	for each in ${FILES}
+	do
+	    case "$host" in
+		dmzshell*) COMMAND="${SSH} ${each} ${host}.lcsee.wvu.edu:~/" ;;
+		*) COMMAND="${each} ${host}.lcsee.wvu.edu:~/" ;;
+	    esac
 
-	eval `${COMMAND}`
+	    rsync ${OPTS} ${COMMAND}
+	done
     done
-done
 
-echo "allGood!"
+    echo "allGood!"
+else
+    echo "do you even keys br0?"
+fi
