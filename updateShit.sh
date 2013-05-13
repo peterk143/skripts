@@ -15,8 +15,7 @@ FILES="/home/pkirkpat/.bashrc
 /home/pkirkpat/.ssh/authorized_keys
 /home/pkirkpat/.ssh/config"
 
-SSH="-e \"ssh -p 20110\""
-OPTS="-avz --progress"
+RSYNC_OPTS="rsync -avz --progress"
 
 CHECK=`ssh-add -l`
 
@@ -28,12 +27,20 @@ then
 	for each in ${FILES}
 	do
 	    case "$host" in
-		dmzshell*) COMMAND="${SSH} ${each} ${host}.lcsee.wvu.edu:~/" ;;
-		*) COMMAND="${each} ${host}.lcsee.wvu.edu:~/" ;;
+		dmzshell*) ${RSYNC_OPTS} -e "ssh -p 20110" ${each} ${host}.lcsee.wvu.edu:~/ ;;
+		*) ${RSYNC_OPTS} ${each} ${host}.lcsee.wvu.edu:~/ ;;
 	    esac
-
-	    rsync ${OPTS} ${COMMAND}
 	done
+    done
+
+    SSH_OPTS="ssh ${h}"
+    RMT_CMD="mkdir -p ~/.ssh && mv ~/authorized_keys ~/config ~/.ssh"
+    for h in ${MACHINES}
+    do
+	case "$h" in
+	    dmzshell*) ssh -p 20110 ${h} "${RMT_CMD}" ;;
+	    *) ssh ${h} ${RMT_CMD} ;;
+	esac
     done
 
     echo "allGood!"
