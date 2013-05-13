@@ -16,7 +16,6 @@ FILES="/home/pkirkpat/.bashrc
 /home/pkirkpat/.ssh/config"
 
 RSYNC_OPTS="rsync -avz --progress"
-
 CHECK=`ssh-add -l`
 
 if [ $? -eq 0 ]
