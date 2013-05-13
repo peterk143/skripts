@@ -17,6 +17,7 @@ tar cvzf ~/temp.tar.gz ~/temp/*
 
 RSYNC_OPTS="rsync -avz --progress"
 TEMP="~/temp.tar.gz"
+
 # ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
