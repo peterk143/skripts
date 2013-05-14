@@ -13,10 +13,10 @@ MACHINES="dmzshell001"
 # file prep
 mkdir -p ~/temp
 cp ~/.ssh/{authorized_keys,config} /cloudhome/pkirkpat/.bash_aliases ~/temp
-tar cvzf ~/temp.tar.gz ~/temp/*
+gzip -r ~/temp > temp.gz && rm -rf ~/temp
 
 RSYNC_OPTS="rsync -avz --progress"
-TEMP="~/temp.tar.gz"
+TEMP="~/temp.gz"
 
 # ssh key check
 CHECK=`ssh-add -l`
@@ -33,7 +33,7 @@ then
     done
 
     # put files into place
-    RMT_CMD="tar xzvf ~/temp.tar.gz && mkdir -p ~/.ssh && mv ~/temp/authorized_keys ~/temp/config ~/.ssh"
+    RMT_CMD="gunzip ~/temp.gz && mkdir -p ~/.ssh && mv ~/temp/authorized_keys ~/temp/config ~/.ssh"
     for h in ${MACHINES}
     do
 	case "$h" in
@@ -43,7 +43,7 @@ then
     done
 
     # clean up temps
-    CLEAN="rm -rf ~/temp && rm ~/temp.tar.gz"
+    CLEAN="rm -rf ~/temp && rm ~/temp.gz"
     for x in ${MACHINES}
     do
 	case "$x" in
