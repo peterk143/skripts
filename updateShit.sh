@@ -1,14 +1,14 @@
 #! /bin/bash
 
-MACHINES="dmzshell001"
-# dmzshell002
-# dmzshell003
-# dmzshell004
-# dmzlegacyshell001
-# dmzlegacyshell002
-# nagios001
-# nagios002
-# tnode001"
+MACHINES="dmzshell001
+dmzshell002
+dmzshell003
+dmzshell004
+dmzlegacyshell001
+dmzlegacyshell002
+nagios001
+nagios002
+tnode001"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
@@ -17,9 +17,9 @@ FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 
 TMP="/home/pkirkpat/asdf"
 ZIP="/home/pkirkpat/asdf.temp.tar.gz"
-RSYNC_OPTS="rsync -avz --progress"
+RSYNC_OPTS="rsync -az"
 CLEAN="rm -rf /home/pkirkpat/asdf /home/pkirkpat/asdf.temp.tar.gz"
-RMT_CMD="tar -xvzPf /home/pkirkpat/asdf.temp.tar.gz && \
+RMT_CMD="tar -xzPf /home/pkirkpat/asdf.temp.tar.gz && \
 mkdir -p /home/pkirkpat/.ssh && \
 mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
 mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
@@ -29,11 +29,11 @@ mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat
 mkdir -p ${TMP}
 for file in ${FILES}
 do
-    cp -v ${file} ${TMP}
+    cp ${file} ${TMP}
 done
 
 # compression
-tar -cvzPf ${ZIP} ${TMP}
+tar -czPf ${ZIP} ${TMP}
 
 # ssh key check
 CHECK=`ssh-add -l`
@@ -73,5 +73,5 @@ else
     echo "do you even keys br0?"
 fi
 
-# eval ${CLEAN}
+`${CLEAN}`
 exit 0
