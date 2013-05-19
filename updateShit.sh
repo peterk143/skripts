@@ -41,9 +41,9 @@ if [ $? -eq 0 ]
 then
     SSHELL="ssh -p 20110"
     # file transpo
+    echo "sending files."
     for host in ${MACHINES}
     do
-	echo ${host}
 	case "$host" in
 	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
 	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
@@ -51,6 +51,7 @@ then
     done
 
     # put files into place
+    echo "puttin' shit away.."
     for h in ${MACHINES}
     do
     	case "$h" in
@@ -60,6 +61,7 @@ then
     done
 
     # clean up temps
+    echo "clean all the things..."
     for x in ${MACHINES}
     do
     	case "$x" in
@@ -70,7 +72,7 @@ then
 
     echo "allGood!"
 else
-    echo "do you even keys br0?"
+    echo "do you even keys, br0?"
 fi
 
 `${CLEAN}`
