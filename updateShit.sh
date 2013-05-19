@@ -10,50 +10,68 @@ MACHINES="dmzshell001"
 # nagios002
 # tnode001"
 
-# file prep
-mkdir -p ~/temp
-cp ~/.ssh/{authorized_keys,config} /cloudhome/pkirkpat/.bash_aliases ~/temp
-gzip -r ~/temp > temp.gz && rm -rf ~/temp
+FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
+/cloudhome/pkirkpat/.ssh/config
+/cloudhome/pkirkpat/.bashrc
+/cloudhome/pkirkpat/.bash_aliases"
 
+TMP="/home/pkirkpat/asdf"
+ZIP="/home/pkirkpat/asdf.temp.tar.gz"
 RSYNC_OPTS="rsync -avz --progress"
-TEMP="~/temp.gz"
+CLEAN="rm -rf /home/pkirkpat/asdf /home/pkirkpat/asdf.temp.tar.gz"
+RMT_CMD="tar -xvzPf /home/pkirkpat/asdf.temp.tar.gz && \
+mkdir -p /home/pkirkpat/.ssh && \
+mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
+mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
+mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat/.ssh/"
+
+# file prep
+mkdir -p ${TMP}
+for file in ${FILES}
+do
+    cp -v ${file} ${TMP}
+done
+
+# compression
+tar -cvzPf ${ZIP} ${TMP}
 
 # ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
+    SSHELL="ssh -p 20110"
     # file transpo
     for host in ${MACHINES}
     do
 	echo ${host}
 	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "ssh -p 20110" ${TEMP} ${host}.lcsee.wvu.edu:~/ ;;
-	    *) ${RSYNC_OPTS} ${TEMP} ${host}.lcsee.wvu.edu:~/ ;;
+	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
+	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
 	esac
     done
 
     # put files into place
-    RMT_CMD="gunzip ~/temp.gz && mkdir -p ~/.ssh && mv ~/temp/authorized_keys ~/temp/config ~/.ssh"
     for h in ${MACHINES}
     do
-	case "$h" in
-	    dmzshell*) ssh -p 20110 ${h} "${RMT_CMD}" ;;
-	    *) ssh ${h} "${RMT_CMD}" ;;
-	esac
+    	case "$h" in
+    	    dmzshell*) ${SSHELL} ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
+    	    *) ssh ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
+    	esac
     done
 
     # clean up temps
-    CLEAN="rm -rf ~/temp && rm ~/temp.gz"
     for x in ${MACHINES}
     do
-	case "$x" in
-	    dmzshell*) ssh -p 20110 ${x} "${CLEAN}" ;;
-	    *) ssh ${x} "${CLEAN}" ;;
-	esac
+    	case "$x" in
+    	    dmzshell*) ${SSHELL} ${x}.lcsee.wvu.edu "${CLEAN}" ;;
+    	    *) ssh ${x}.lcsee.wvu.edu "${CLEAN}" ;;
+    	esac
     done
-    eval ${CLEAN}
 
     echo "allGood!"
 else
     echo "do you even keys br0?"
 fi
+
+# eval ${CLEAN}
+exit 0
