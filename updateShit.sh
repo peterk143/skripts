@@ -14,7 +14,9 @@ fileserver002
 fileserver003
 fileserver004
 fileserver005
-fileserver006"
+fileserver006
+imageserver001
+imageserver002"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
