@@ -81,6 +81,7 @@ then
     echo "allGood!"
 else
     echo "do you even keys, br0?"
+    exit 1
 fi
 
 `${CLEAN}`
