@@ -8,7 +8,13 @@ dmzlegacyshell001
 dmzlegacyshell002
 nagios001
 nagios002
-tnode001"
+tnode001
+fileserver001
+fileserver002
+fileserver003
+fileserver004
+fileserver005
+fileserver006"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
