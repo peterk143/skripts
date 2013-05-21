@@ -78,11 +78,12 @@ then
     	esac
     done
 
+    EXIT_CODE=0
     echo "allGood!"
 else
+    EXIT_CODE=1
     echo "do you even keys, br0?"
-    exit 1
 fi
 
 `${CLEAN}`
-exit 0
+exit ${EXIT_CODE}
