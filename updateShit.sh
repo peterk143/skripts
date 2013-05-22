@@ -5,7 +5,7 @@
 ## to various machines, untars the archive on
 ## the remote, places the files in their correct
 ## location, cleans up the mess, and outputs
-## the elapsed time in HH:MM:SS
+## the elapsed time in MM:SS
 
 MACHINES="dmzshell001
 dmzshell002
