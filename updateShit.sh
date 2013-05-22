@@ -33,6 +33,8 @@ mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
 mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
 mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat/.ssh/"
 
+START="$(date +%s)"
+
 # file prep
 mkdir -p ${TMP}
 for file in ${FILES}
@@ -86,4 +88,7 @@ else
 fi
 
 `${CLEAN}`
+FIN="$(date +%s)"
+TIME="$(expr ${FIN} - ${START})"
+echo $(date -d ${TIME} +%H:%M:%S)
 exit ${EXIT_CODE}
