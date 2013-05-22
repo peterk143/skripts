@@ -3,5 +3,4 @@ various random scripts to make life easier...
 ====================================
 	        RFE
 ====================================
-1) output overall time when completed (make new branch)
-2) use _actual_ temp dirs
+0) use _actual_ temp dirs
