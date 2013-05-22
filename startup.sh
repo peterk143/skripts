@@ -43,3 +43,10 @@ if [ $? -eq 0 ]; then
     fi
     ln -s /cloudhome/pkirkpat/.gconf ~/
 fi
+
+## set global git variables
+GIT=`git --version`
+if [ $? -eq 0 ]; then
+    git config --global user.email "peter.k143@gmail.com"
+    git config --global user.name "Peter Kirkpatrick"
+fi
