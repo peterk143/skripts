@@ -1,5 +1,12 @@
 #! /bin/bash
 
+## takes a list of files from the localhost,
+## tars them into a tmp dir, rsyncs them
+## to various machines, untars the archive on
+## the remote, places the files in their correct
+## location, cleans up the mess, and outputs
+## the elapsed time in HH:MM:SS
+
 MACHINES="dmzshell001
 dmzshell002
 dmzshell003
@@ -32,7 +39,6 @@ mkdir -p /home/pkirkpat/.ssh && \
 mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
 mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
 mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat/.ssh/"
-
 START="$(date +%s)"
 
 # file prep
@@ -45,7 +51,7 @@ done
 # compression
 tar -czPf ${ZIP} ${TMP}
 
-# ssh key check
+# # ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
@@ -88,7 +94,10 @@ else
 fi
 
 `${CLEAN}`
+
+# elapsed time
 FIN="$(date +%s)"
 TIME="$(expr ${FIN} - ${START})"
-echo $(date -d ${TIME} +%H:%M:%S)
+echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
+
 exit ${EXIT_CODE}
