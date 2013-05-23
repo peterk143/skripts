@@ -31,14 +31,15 @@ FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.bash_aliases"
 
 TMP=`mktemp -d`
-ZIP=`mktemp`.tar.gz
+ZIP=${TMP}/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
-CLEAN="rm -rf ${TMP} /home/pkirkpat/${ZIP}"
-RMT_CMD="tar -xzPf /home/pkirkpat/${ZIP} && \
+CLEAN="rm -rf ${TMP} ${ZIP}"
+RMT_CMD="tar -xzPf ${ZIP} && \
 mkdir -p /home/pkirkpat/.ssh && \
 mv ${TMP}/.bashrc /home/pkirkpat/ && \
 mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
 mv ${TMP}/authorized_keys ${TMP}/config /home/pkirkpat/.ssh/"
+#RMT_CMD="ls -al /tmp"
 START="$(date +%s)"
 
 # file prep
@@ -61,8 +62,8 @@ then
     for host in ${MACHINES}
     do
 	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
+	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:${TMP} ;;
+	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:${TMP} ;;
 	esac
     done
 
@@ -93,7 +94,7 @@ else
     echo "do you even keys, br0?"
 fi
 
-`${CLEAN}`
+#`${CLEAN}`
 
 # elapsed time
 FIN="$(date +%s)"
