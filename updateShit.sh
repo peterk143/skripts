@@ -7,23 +7,23 @@
 ## location, cleans up the mess, and outputs
 ## the elapsed time in MM:SS
 
-MACHINES="dmzshell001"
-# dmzshell002
-# dmzshell003
-# dmzshell004
-# dmzlegacyshell001
-# dmzlegacyshell002
-# nagios001
-# nagios002
-# tnode001
-# fileserver001
-# fileserver002
-# fileserver003
-# fileserver004
-# fileserver005
-# fileserver006
-# imageserver001
-# imageserver002"
+MACHINES="dmzshell001
+dmzshell002
+dmzshell003
+dmzshell004
+dmzlegacyshell001
+dmzlegacyshell002
+nagios001
+nagios002
+tnode001
+fileserver001
+fileserver002
+fileserver003
+fileserver004
+fileserver005
+fileserver006
+imageserver001
+imageserver002"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
@@ -39,7 +39,6 @@ mkdir -p /home/pkirkpat/.ssh && \
 mv ${TMP}/.bashrc /home/pkirkpat/ && \
 mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
 mv ${TMP}/authorized_keys ${TMP}/config /home/pkirkpat/.ssh/"
-#RMT_CMD="ls -al /tmp"
 START="$(date +%s)"
 
 # file prep
@@ -52,7 +51,7 @@ done
 # compression
 tar -czPf ${ZIP} ${TMP}
 
-# # ssh key check
+# ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
@@ -94,7 +93,7 @@ else
     echo "do you even keys, br0?"
 fi
 
-#`${CLEAN}`
+`${CLEAN}`
 
 # elapsed time
 FIN="$(date +%s)"
