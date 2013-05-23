@@ -7,38 +7,38 @@
 ## location, cleans up the mess, and outputs
 ## the elapsed time in MM:SS
 
-MACHINES="dmzshell001
-dmzshell002
-dmzshell003
-dmzshell004
-dmzlegacyshell001
-dmzlegacyshell002
-nagios001
-nagios002
-tnode001
-fileserver001
-fileserver002
-fileserver003
-fileserver004
-fileserver005
-fileserver006
-imageserver001
-imageserver002"
+MACHINES="dmzshell001"
+# dmzshell002
+# dmzshell003
+# dmzshell004
+# dmzlegacyshell001
+# dmzlegacyshell002
+# nagios001
+# nagios002
+# tnode001
+# fileserver001
+# fileserver002
+# fileserver003
+# fileserver004
+# fileserver005
+# fileserver006
+# imageserver001
+# imageserver002"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
 /cloudhome/pkirkpat/.bashrc
 /cloudhome/pkirkpat/.bash_aliases"
 
-TMP="/home/pkirkpat/asdf"
-ZIP="/home/pkirkpat/asdf.temp.tar.gz"
+TMP=`mktemp -d`
+ZIP=`mktemp`.tar.gz
 RSYNC_OPTS="rsync -az"
-CLEAN="rm -rf /home/pkirkpat/asdf /home/pkirkpat/asdf.temp.tar.gz"
-RMT_CMD="tar -xzPf /home/pkirkpat/asdf.temp.tar.gz && \
+CLEAN="rm -rf ${TMP} /home/pkirkpat/${ZIP}"
+RMT_CMD="tar -xzPf /home/pkirkpat/${ZIP} && \
 mkdir -p /home/pkirkpat/.ssh && \
-mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
-mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
-mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat/.ssh/"
+mv ${TMP}/.bashrc /home/pkirkpat/ && \
+mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
+mv ${TMP}/authorized_keys ${TMP}/config /home/pkirkpat/.ssh/"
 START="$(date +%s)"
 
 # file prep
