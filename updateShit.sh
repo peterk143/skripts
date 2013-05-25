@@ -7,23 +7,25 @@
 ## location, cleans up the mess, and outputs
 ## the elapsed time in MM:SS
 
-MACHINES="dmzshell001"
-# dmzshell002
-# dmzshell003
-# dmzshell004
-# dmzlegacyshell001
-# dmzlegacyshell002
-# nagios001
-# nagios002
-# tnode001
-# fileserver001
-# fileserver002
-# fileserver003
-# fileserver004
-# fileserver005
-# fileserver006
-# imageserver001
-# imageserver002"
+## MUST be ran from a machine with routes to all hosts
+
+MACHINES="dmzshell001
+dmzshell002
+dmzshell003
+dmzshell004
+dmzlegacyshell001
+dmzlegacyshell002
+nagios001
+nagios002
+tnode001
+fileserver001
+fileserver002
+fileserver003
+fileserver004
+fileserver005
+fileserver006
+imageserver001
+imageserver002"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
@@ -34,12 +36,12 @@ TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
 CLEAN="rm -rf ${TMP} ${ZIP}"
-RMT_CMD="tar -xzPf ${ZIP}" # && \
-# mkdir -p /home/pkirkpat/.ssh && \
-# mv ${TMP}/.bashrc /home/pkirkpat/ && \
-# mv ${TMP}/config /home/pkirkpat/.ssh/ && \
-# mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
-# mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
+RMT_CMD="tar -xzPf ${ZIP} && \
+mkdir -p /home/pkirkpat/.ssh && \
+mv ${TMP}/.bashrc /home/pkirkpat/ && \
+mv ${TMP}/config /home/pkirkpat/.ssh/ && \
+mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
+mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
 START="$(date +%s)"
 
 # file prep
@@ -62,8 +64,8 @@ then
     for host in ${MACHINES}
     do
 	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:${TMP} ;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:${TMP} ;;
+	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
+	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
 	esac
     done
 
@@ -78,14 +80,14 @@ then
     done
 
     # clean up temps
-    # echo "clean all the things..."
-    # for x in ${MACHINES}
-    # do
-    # 	case "$x" in
-    # 	    dmzshell*) ${SSHELL} ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    # 	    *) ssh ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    # 	esac
-    # done
+    echo "clean all the things..."
+    for x in ${MACHINES}
+    do
+    	case "$x" in
+    	    dmzshell*) ${SSHELL} ${x}.lcsee.wvu.edu "${CLEAN}" ;;
+    	    *) ssh ${x}.lcsee.wvu.edu "${CLEAN}" ;;
+    	esac
+    done
 
     EXIT_CODE=0
     echo "allGood!"
@@ -94,7 +96,7 @@ else
     echo "do you even keys, br0?"
 fi
 
-#`${CLEAN}`
+`${CLEAN}`
 
 # elapsed time
 FIN="$(date +%s)"
