@@ -31,14 +31,15 @@ FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.bash_aliases"
 
 TMP=`mktemp -d`
-ZIP=${TMP}/asdf.tar.gz
+ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
 CLEAN="rm -rf ${TMP} ${ZIP}"
-RMT_CMD="tar -xzPf ${ZIP} && \
-mkdir -p /home/pkirkpat/.ssh && \
-mv ${TMP}/.bashrc /home/pkirkpat/ && \
-mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
-mv ${TMP}/authorized_keys ${TMP}/config /home/pkirkpat/.ssh/"
+RMT_CMD="tar -xzPf ${ZIP}" # && \
+# mkdir -p /home/pkirkpat/.ssh && \
+# mv ${TMP}/.bashrc /home/pkirkpat/ && \
+# mv ${TMP}/config /home/pkirkpat/.ssh/ && \
+# mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
+# mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
 START="$(date +%s)"
 
 # file prep
@@ -93,7 +94,7 @@ else
     echo "do you even keys, br0?"
 fi
 
-`${CLEAN}`
+#`${CLEAN}`
 
 # elapsed time
 FIN="$(date +%s)"
