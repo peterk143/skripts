@@ -9,23 +9,23 @@
 
 ## MUST be ran from a machine with routes to all hosts
 
-MACHINES="dmzshell001
-dmzshell002
-dmzshell003
-dmzshell004
-dmzlegacyshell001
-dmzlegacyshell002
-nagios001
-nagios002
-tnode001
-fileserver001
-fileserver002
-fileserver003
-fileserver004
-fileserver005
-fileserver006
-imageserver001
-imageserver002"
+MACHINES="dmzshell001"
+# dmzshell002
+# dmzshell003
+# dmzshell004
+# dmzlegacyshell001
+# dmzlegacyshell002
+# nagios001
+# nagios002
+# tnode001
+# fileserver001
+# fileserver002
+# fileserver003
+# fileserver004
+# fileserver005
+# fileserver006
+# imageserver001
+# imageserver002"
 
 FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.ssh/config
@@ -59,34 +59,18 @@ CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
     SSHELL="ssh -p 20110"
-    # file transpo
-    echo "sending files."
     for host in ${MACHINES}
     do
 	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
+	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+		${SSHELL} ${host}.lcsee.wvu.edu "${RMT_CMD}"
+		${SSHELL} ${host}.lcsee.wvu.edu "${CLEAN}"
+		;;
+	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+		${host}.lcsee.wvu.edu "${RMT_CMD}"
+		${host}.lcsee.wvu.edu "${CLEAN}"
+		;;
 	esac
-    done
-
-    # put files into place
-    echo "puttin' shit away.."
-    for h in ${MACHINES}
-    do
-    	case "$h" in
-    	    dmzshell*) ${SSHELL} ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
-    	    *) ssh ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
-    	esac
-    done
-
-    # clean up temps
-    echo "clean all the things..."
-    for x in ${MACHINES}
-    do
-    	case "$x" in
-    	    dmzshell*) ${SSHELL} ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    	    *) ssh ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    	esac
     done
 
     EXIT_CODE=0
