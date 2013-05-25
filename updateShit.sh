@@ -36,9 +36,9 @@ TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
 CLEAN="rm -rf ${TMP} ${ZIP}"
-RMT_CMD="tar -xzPf ${ZIP} && \
-mkdir -p /home/pkirkpat/.ssh && \
-mv ${TMP}/.bashrc /home/pkirkpat/ && \
+UNTAR="tar -xzPf ${ZIP} && \
+mkdir -p /home/pkirkpat/.ssh"
+MOVE="mv ${TMP}/.bashrc /home/pkirkpat/ && \
 mv ${TMP}/config /home/pkirkpat/.ssh/ && \
 mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
 mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
@@ -63,12 +63,10 @@ then
     do
 	case "$host" in
 	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-		${SSHELL} ${host}.lcsee.wvu.edu "${RMT_CMD}"
-		${SSHELL} ${host}.lcsee.wvu.edu "${CLEAN}"
+		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
 		;;
 	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-		${host}.lcsee.wvu.edu "${RMT_CMD}"
-		${host}.lcsee.wvu.edu "${CLEAN}"
+		${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
 		;;
 	esac
     done
