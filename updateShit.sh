@@ -7,6 +7,8 @@
 ## location, cleans up the mess, and outputs
 ## the elapsed time in MM:SS
 
+## MUST be ran from a machine with routes to all hosts
+
 MACHINES="dmzshell001
 dmzshell002
 dmzshell003
@@ -30,15 +32,16 @@ FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
 /cloudhome/pkirkpat/.bashrc
 /cloudhome/pkirkpat/.bash_aliases"
 
-TMP="/home/pkirkpat/asdf"
-ZIP="/home/pkirkpat/asdf.temp.tar.gz"
+TMP=`mktemp -d`
+ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
-CLEAN="rm -rf /home/pkirkpat/asdf /home/pkirkpat/asdf.temp.tar.gz"
-RMT_CMD="tar -xzPf /home/pkirkpat/asdf.temp.tar.gz && \
+CLEAN="rm -rf ${TMP} ${ZIP}"
+RMT_CMD="tar -xzPf ${ZIP} && \
 mkdir -p /home/pkirkpat/.ssh && \
-mv /home/pkirkpat/asdf/.bashrc /home/pkirkpat/ && \
-mv /home/pkirkpat/asdf/.bash_aliases /home/pkirkpat/ && \
-mv /home/pkirkpat/asdf/authorized_keys /home/pkirkpat/asdf/config /home/pkirkpat/.ssh/"
+mv ${TMP}/.bashrc /home/pkirkpat/ && \
+mv ${TMP}/config /home/pkirkpat/.ssh/ && \
+mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
+mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
 START="$(date +%s)"
 
 # file prep
@@ -51,7 +54,7 @@ done
 # compression
 tar -czPf ${ZIP} ${TMP}
 
-# # ssh key check
+# ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
@@ -61,8 +64,8 @@ then
     for host in ${MACHINES}
     do
 	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:~/ ;;
+	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
+	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
 	esac
     done
 
