@@ -1,4 +1,4 @@
-#! /bin/bash
+ #! /bin/bash
 
 ## takes a list of files from the localhost,
 ## tars them into a tmp dir, rsyncs them
