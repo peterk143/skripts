@@ -44,17 +44,17 @@ mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
 mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
 START="$(date +%s)"
 
-# file prep
+## file prep
 mkdir -p ${TMP}
 for file in ${FILES}
 do
     cp ${file} ${TMP}
 done
 
-# compression
+## compression
 tar -czPf ${ZIP} ${TMP}
 
-# ssh key check
+## ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
@@ -80,7 +80,7 @@ fi
 
 `${CLEAN}`
 
-# elapsed time
+## elapsed time
 FIN="$(date +%s)"
 TIME="$(expr ${FIN} - ${START})"
 echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
