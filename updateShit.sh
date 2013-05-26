@@ -52,7 +52,8 @@ do
 done
 
 ## compression
-tar -czPf ${ZIP} ${TMP}
+#tar -czPf ${ZIP} ${TMP}
+tar -cPf - ${TMP} |pv -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
 
 ## ssh key check
 CHECK=`ssh-add -l`
@@ -61,14 +62,15 @@ then
     SSHELL="ssh -p 20110"
     for host in ${MACHINES}
     do
-	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-		;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-		${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-		;;
-	esac
+	# case "$host" in
+	#     dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+	# 	${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+	# 	;;
+	#     *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+	# 	${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+	# 	;;
+	# esac
+	echo "debug"
     done
 
     EXIT_CODE=0
@@ -78,7 +80,7 @@ else
     echo "do you even keys, br0?"
 fi
 
-`${CLEAN}`
+#`${CLEAN}`
 
 ## elapsed time
 FIN="$(date +%s)"
