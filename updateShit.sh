@@ -1,4 +1,4 @@
- #! /bin/bash
+#! /bin/bash
 
 ## takes a list of files from the localhost,
 ## tars them into a tmp dir, rsyncs them
@@ -39,13 +39,13 @@ ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
 CLEAN="rm -rf ${TMP} ${ZIP}"
 UNTAR="tar -xzPf ${ZIP} && \
-mkdir -p /home/pkirkpat/.ssh"
-MOVE="mv ${TMP}/.bashrc /home/pkirkpat/ && \
-mv ${TMP}/config /home/pkirkpat/.ssh/ && \
-mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
-mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/
-mv ${TMP}/.emacs /home/pkirkpat/ && \
-rsync -a ${TMP}/.emacs.d /home/pkirkpat/"
+mkdir -p /home/$USER/.ssh"
+MOVE="mv ${TMP}/.bashrc /home/$USER/ && \
+mv ${TMP}/config /home/$USER/.ssh/ && \
+mv ${TMP}/.bash_aliases /home/$USER/ && \
+mv ${TMP}/authorized_keys /home/$USER/.ssh/ && \
+mv ${TMP}/.emacs /home/$USER/ && \
+rsync -a ${TMP}/.emacs.d /home/$USER/"
 START="$(date +%s)"
 
 ## ssh key check
@@ -81,7 +81,7 @@ then
     		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
     		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		ssh ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
     		;;
     	esac
     done
