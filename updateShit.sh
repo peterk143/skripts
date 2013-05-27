@@ -69,8 +69,8 @@ then
     done
 
     ## compression
-    #tar -czPf ${ZIP} ${TMP}
-    tar -cPf - ${TMP} |pv -N tar -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
+    tar -czPf ${ZIP} ${TMP}
+    #tar -cPf - ${TMP} |pv -N tar\'n -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
 
     ## remote magic
     SSHELL="ssh -p 20110"
