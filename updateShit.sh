@@ -27,10 +27,12 @@ MACHINES="dmzshell001"
 # imageserver001
 # imageserver002"
 
-FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
-/cloudhome/pkirkpat/.ssh/config
-/cloudhome/pkirkpat/.bashrc
-/cloudhome/pkirkpat/.bash_aliases"
+FILES=".ssh/authorized_keys
+.ssh/config
+.bashrc
+.bash_aliases
+.emacs
+.emacs.d/"
 
 TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
@@ -41,50 +43,58 @@ mkdir -p /home/pkirkpat/.ssh"
 MOVE="mv ${TMP}/.bashrc /home/pkirkpat/ && \
 mv ${TMP}/config /home/pkirkpat/.ssh/ && \
 mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
-mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
+mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/
+mv ${TMP}/.emacs /home/pkirkpat/ && \
+rsync -a ${TMP}/.emacs.d /home/pkirkpat/"
 START="$(date +%s)"
-
-## file prep
-mkdir -p ${TMP}
-for file in ${FILES}
-do
-    cp ${file} ${TMP}
-done
-
-## compression
-#tar -czPf ${ZIP} ${TMP}
-tar -cPf - ${TMP} |pv -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
 
 ## ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
+    ## dotfile check
+    if [ -d /cloudhome/pkirkpat/dotfiles ]
+    then
+	DOTS="/cloudhome/pkirkpat/dotfiles"
+    else
+	echo "you need the dotfile dir, br0"
+	exit 0
+    fi
+
+    ## file prep
+    mkdir -p ${TMP}
+    for file in ${FILES}
+    do
+	cp -R ${DOTS}/${file} ${TMP}
+    done
+
+    ## compression
+    #tar -czPf ${ZIP} ${TMP}
+    tar -cPf - ${TMP} |pv -N tar -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
+
+    ## remote magic
     SSHELL="ssh -p 20110"
     for host in ${MACHINES}
     do
-	# case "$host" in
-	#     dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-	# 	${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-	# 	;;
-	#     *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-	# 	${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-	# 	;;
-	# esac
-	echo "debug"
+    	case "$host" in
+    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		;;
+    	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		;;
+    	esac
     done
 
-    EXIT_CODE=0
+    `${CLEAN}`
+    
+    ## elapsed time
+    FIN="$(date +%s)"
+    TIME="$(expr ${FIN} - ${START})"
+    echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
+
     echo "allGood!"
 else
-    EXIT_CODE=1
     echo "do you even keys, br0?"
+    exit 1
 fi
-
-#`${CLEAN}`
-
-## elapsed time
-FIN="$(date +%s)"
-TIME="$(expr ${FIN} - ${START})"
-echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
-
-exit ${EXIT_CODE}
