@@ -9,23 +9,23 @@
 
 ## MUST be ran from a machine with routes to all hosts
 
-MACHINES="dmzshell001"
-# dmzshell002
-# dmzshell003
-# dmzshell004
-# dmzlegacyshell001
-# dmzlegacyshell002
-# nagios001
-# nagios002
-# tnode001
-# fileserver001
-# fileserver002
-# fileserver003
-# fileserver004
-# fileserver005
-# fileserver006
-# imageserver001
-# imageserver002"
+MACHINES="dmzshell001
+dmzshell002
+dmzshell003
+dmzshell004
+dmzlegacyshell001
+dmzlegacyshell002
+nagios001
+nagios002
+tnode001
+fileserver001
+fileserver002
+fileserver003
+fileserver004
+fileserver005
+fileserver006
+imageserver001
+imageserver002"
 
 FILES=".ssh/authorized_keys
 .ssh/config
@@ -37,9 +37,9 @@ FILES=".ssh/authorized_keys
 TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
-CLEAN="rm -rf ${TMP} ${ZIP}"
 UNTAR="tar -xzPf ${ZIP} && \
 mkdir -p /home/$USER/.ssh"
+CLEAN="rm -rf ${TMP} ${ZIP}"
 MOVE="mv ${TMP}/.bashrc /home/$USER/ && \
 mv ${TMP}/config /home/$USER/.ssh/ && \
 mv ${TMP}/.bash_aliases /home/$USER/ && \
@@ -70,7 +70,6 @@ then
 
     ## compression
     tar -czPf ${ZIP} ${TMP}
-    #tar -cPf - ${TMP} |pv -N tar\'n -s $(du -sb ${TMP} |awk '{print $1}') |gzip > ${ZIP}
 
     ## remote magic
     SSHELL="ssh -p 20110"
