@@ -53,9 +53,9 @@ CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
     ## dotfile check
-    if [ -d /cloudhome/pkirkpat/dotfiles ]
+    if [ -d /cloudhome/$USER/dotfiles ]
     then
-	DOTS="/cloudhome/pkirkpat/dotfiles"
+	DOTS="/cloudhome/$USER/dotfiles"
     else
 	echo "you need the dotfile dir, br0"
 	exit 0
