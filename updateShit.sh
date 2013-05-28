@@ -9,23 +9,23 @@
 
 ## MUST be ran from a machine with routes to all hosts
 
-MACHINES="dmzshell001
-dmzshell002
-dmzshell003
-dmzshell004
-dmzlegacyshell001
-dmzlegacyshell002
-nagios001
-nagios002
-tnode001
-fileserver001
-fileserver002
-fileserver003
-fileserver004
-fileserver005
-fileserver006
-imageserver001
-imageserver002"
+MACHINES="dmzshell001"
+# dmzshell002
+# dmzshell003
+# dmzshell004
+# dmzlegacyshell001
+# dmzlegacyshell002
+# nagios001
+# nagios002
+# tnode001
+# fileserver001
+# fileserver002
+# fileserver003
+# fileserver004
+# fileserver005
+# fileserver006
+# imageserver001
+# imageserver002"
 
 FILES=".ssh/authorized_keys
 .ssh/config
@@ -72,15 +72,15 @@ then
     tar -czPf ${ZIP} ${TMP}
 
     ## remote magic
-    SSHELL="ssh -p 20110"
+    SSHELL="ssh -o \"StrictHostKeyChecking no\""
     for host in ${MACHINES}
     do
     	case "$host" in
-    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		${SSHELL} -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
     		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		ssh ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
     		;;
     	esac
     done
