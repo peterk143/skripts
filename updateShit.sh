@@ -37,7 +37,7 @@ FILES=".ssh/authorized_keys
 TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
-UNTAR="tar -xzPf ${ZIP} && \
+UNTAR="tar -xzmPf ${ZIP} && \
 mkdir -p /home/$USER/.ssh"
 CLEAN="rm -rf ${TMP} ${ZIP}"
 MOVE="mv ${TMP}/.bashrc /home/$USER/ && \
