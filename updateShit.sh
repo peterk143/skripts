@@ -27,80 +27,73 @@ fileserver006
 imageserver001
 imageserver002"
 
-FILES="/cloudhome/pkirkpat/.ssh/authorized_keys
-/cloudhome/pkirkpat/.ssh/config
-/cloudhome/pkirkpat/.bashrc
-/cloudhome/pkirkpat/.bash_aliases"
+FILES=".ssh/authorized_keys
+.ssh/config
+.bashrc
+.bash_aliases
+.emacs
+.emacs.d/"
 
 TMP=`mktemp -d`
 ZIP=/tmp/asdf.tar.gz
 RSYNC_OPTS="rsync -az"
+UNTAR="tar -xzPf ${ZIP} && \
+mkdir -p /home/$USER/.ssh"
 CLEAN="rm -rf ${TMP} ${ZIP}"
-RMT_CMD="tar -xzPf ${ZIP} && \
-mkdir -p /home/pkirkpat/.ssh && \
-mv ${TMP}/.bashrc /home/pkirkpat/ && \
-mv ${TMP}/config /home/pkirkpat/.ssh/ && \
-mv ${TMP}/.bash_aliases /home/pkirkpat/ && \
-mv ${TMP}/authorized_keys /home/pkirkpat/.ssh/"
+MOVE="mv ${TMP}/.bashrc /home/$USER/ && \
+mv ${TMP}/config /home/$USER/.ssh/ && \
+mv ${TMP}/.bash_aliases /home/$USER/ && \
+mv ${TMP}/authorized_keys /home/$USER/.ssh/ && \
+mv ${TMP}/.emacs /home/$USER/ && \
+rsync -a ${TMP}/.emacs.d /home/$USER/"
 START="$(date +%s)"
 
-# file prep
-mkdir -p ${TMP}
-for file in ${FILES}
-do
-    cp ${file} ${TMP}
-done
-
-# compression
-tar -czPf ${ZIP} ${TMP}
-
-# ssh key check
+## ssh key check
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
+    ## dotfile check
+    if [ -d /cloudhome/$USER/dotfiles ]
+    then
+	DOTS="/cloudhome/$USER/dotfiles"
+    else
+	echo "you need the dotfile dir, br0"
+	exit 0
+    fi
+
+    ## file prep
+    mkdir -p ${TMP}
+    for file in ${FILES}
+    do
+	cp -R ${DOTS}/${file} ${TMP}
+    done
+
+    ## compression
+    tar -czPf ${ZIP} ${TMP}
+
+    ## remote magic
     SSHELL="ssh -p 20110"
-    # file transpo
-    echo "sending files."
     for host in ${MACHINES}
     do
-	case "$host" in
-	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
-	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp ;;
-	esac
-    done
-
-    # put files into place
-    echo "puttin' shit away.."
-    for h in ${MACHINES}
-    do
-    	case "$h" in
-    	    dmzshell*) ${SSHELL} ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
-    	    *) ssh ${h}.lcsee.wvu.edu "${RMT_CMD}" ;;
+    	case "$host" in
+    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		;;
+    	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		ssh ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		;;
     	esac
     done
 
-    # clean up temps
-    echo "clean all the things..."
-    for x in ${MACHINES}
-    do
-    	case "$x" in
-    	    dmzshell*) ${SSHELL} ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    	    *) ssh ${x}.lcsee.wvu.edu "${CLEAN}" ;;
-    	esac
-    done
+    `${CLEAN}`
+    
+    ## elapsed time
+    FIN="$(date +%s)"
+    TIME="$(expr ${FIN} - ${START})"
+    echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
 
-    EXIT_CODE=0
     echo "allGood!"
 else
-    EXIT_CODE=1
     echo "do you even keys, br0?"
+    exit 1
 fi
-
-`${CLEAN}`
-
-# elapsed time
-FIN="$(date +%s)"
-TIME="$(expr ${FIN} - ${START})"
-echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
-
-exit ${EXIT_CODE}
