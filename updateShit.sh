@@ -81,11 +81,9 @@ then
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
 		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo ${host}
 		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
     		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo ${host}
     		;;
     	esac
     done
