@@ -31,6 +31,7 @@ FILES=".ssh/authorized_keys
 .ssh/config
 .bashrc
 .bash_aliases
+.bash_profile
 .emacs
 .emacs.d/"
 
