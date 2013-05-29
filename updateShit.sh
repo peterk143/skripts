@@ -9,6 +9,31 @@
 
 ## MUST be ran from a machine with routes to all hosts
 
+bold() {
+    echo -e "\033[1m${1}\033[0m"
+}
+
+usage() {
+    echo -e "Usage: ${0} [`bold --servers` | `bold --desktops`]"
+    echo ""
+    echo "     `bold -s`|`bold --servers`     update all servers"
+    echo "     `bold -d`|`bold --desktops`    update all desktops"
+    echo ""
+    echo "     `bold --list-servers`     list all available servers"
+    echo "     `bold --list-desktops`    list all available desktops"
+    echo ""
+    echo "     `bold Example`:"
+    echo -e "     ${0} --desktops"
+}
+
+if [ $# -ne 1 ]; then
+    usage
+    exit 0
+elif [ "${1}" = "--help" -o "${1}" = "-h" ]; then
+    usage
+    exit 0
+fi
+
 MACHINES="dmzshell001
 dmzshell002
 dmzshell003
@@ -27,6 +52,26 @@ fileserver006
 imageserver001
 imageserver002"
 
+DESKTOPS="CSEESYSTEMS01
+CSEESYSTEMS03
+CSEESYSTEMS04
+CSEESYSTEMS05
+CSEESYSTEMS07
+CSEESYSTEMS08
+CSEESYSTEMS09"
+
+if [ "${1}" == "--list-servers" ]; then
+    for node in ${MACHINES}; do
+	echo "   " ${node}
+    done
+    exit 0
+elif [ "${1}" == "--list-desktops" ]; then
+    for instance in ${DESKTOPS}; do
+	echo "   " ${instance}
+    done
+    exit 0
+fi
+
 FILES=".ssh/authorized_keys
 .ssh/config
 .bashrc
@@ -36,7 +81,7 @@ FILES=".ssh/authorized_keys
 .emacs.d/"
 
 TMP=`mktemp -d`
-ZIP=/tmp/asdf.tar.gz
+ZIP="/tmp/asdf.tar.gz"
 RSYNC_OPTS="rsync -az"
 UNTAR="tar -xzmPf ${ZIP} && \
 mkdir -p /home/$USER/.ssh"
@@ -60,7 +105,7 @@ then
 	DOTS="/cloudhome/$USER/dotfiles"
     else
 	echo "you need the dotfile dir, br0"
-	exit 0
+	exit 1
     fi
 
     ## file prep
@@ -73,14 +118,25 @@ then
     ## compression
     tar -czPf ${ZIP} ${TMP}
 
+    case "$1" in
+	-s|--servers) TARGET=${MACHINES};;
+	-d|--desktops) TARGET=${DESKTOPS};;
+	*) echo "unknown option"
+	    exit 1;;
+    esac
+
     ## remote magic
     SSHELL="ssh -o"
     KEYCHECK="StrictHostKeyChecking no"
-    for host in ${MACHINES}
+    for host in ${TARGET}
     do
+	echo ${host}
     	case "$host" in
-    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    	    dmzshell*)${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
 		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		;;
+	    CSEESYSTEMS*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
+		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
 		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
     		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
