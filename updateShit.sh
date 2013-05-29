@@ -46,6 +46,7 @@ mv ${TMP}/config /home/$USER/.ssh/ && \
 mv ${TMP}/.bash_aliases /home/$USER/ && \
 mv ${TMP}/authorized_keys /home/$USER/.ssh/ && \
 mv ${TMP}/.emacs /home/$USER/ && \
+mv ${TMP}/.profile /home/$USER/ && \
 rsync -a ${TMP}/.emacs.d /home/$USER/"
 START="$(date +%s)"
 
