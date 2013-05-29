@@ -75,16 +75,17 @@ then
 
     ## remote magic
     SSHELL="ssh -o"
-    KEYCHECK='StrictHostKeyChecking no'
+    KEYCHECK="StrictHostKeyChecking no"
     for host in ${MACHINES}
     do
-	
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo ${host}
 		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
     		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo ${host}
     		;;
     	esac
     done
@@ -95,8 +96,7 @@ then
     FIN="$(date +%s)"
     TIME="$(expr ${FIN} - ${START})"
     echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
-
-    echo "allGood!"
+    echo "crescent fresh!"
 else
     echo "do you even keys, br0?"
     exit 1
