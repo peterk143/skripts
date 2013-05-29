@@ -72,15 +72,17 @@ then
     tar -czPf ${ZIP} ${TMP}
 
     ## remote magic
-    SSHELL="ssh -p 20110"
+    SSHELL="ssh -o"
+    KEYCHECK='StrictHostKeyChecking no'
     for host in ${MACHINES}
     do
+	
     	case "$host" in
-    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL}" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		${SSHELL} ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
-    		;;
+    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
-    		ssh ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
     		;;
     	esac
     done
