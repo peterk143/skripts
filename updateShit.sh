@@ -18,7 +18,7 @@ cat <<EOF
 
   Usage: ${0} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]
 
-    `bold -l`|`bold --list`=hosts          specify which machines to update
+    `bold -l`|`bold --list` hosts          specify which machines to update
 
     `bold -s`|`bold --servers`             update all servers
     `bold -d`|`bold --desktops`            update all desktops
@@ -31,10 +31,7 @@ cat <<EOF
 EOF
 }
 
-if [ $# -ne 1 ]; then
-    usage
-    exit 0
-elif [ "${1}" = "--help" -o "${1}" = "-h" ]; then
+if [ "${1}" = "--help" -o "${1}" = "-h" ]; then
     usage
     exit 0
 fi
@@ -57,13 +54,13 @@ fileserver004
 fileserver005
 fileserver006"
 
-DESKTOPS="CSEESYSTEMS01
-CSEESYSTEMS03
-CSEESYSTEMS04
-CSEESYSTEMS05
-CSEESYSTEMS07
-CSEESYSTEMS08
-CSEESYSTEMS09"
+DESKTOPS="cseesystems01
+cseesystems03
+cseesystems04
+cseesystems05
+cseesystems07
+cseesystems08
+cseesystems09"
 
 if [ "${1}" == "--list-servers" ]; then
     for node in ${MACHINES}; do
@@ -124,15 +121,17 @@ then
     tar -czPf ${ZIP} ${TMP}
 
     case "$1" in
-	-s|--servers) TARGET=${MACHINES};;
-	-d|--desktops) TARGET=${DESKTOPS};;
+	-s|--servers) TARGET=${MACHINES} ;;
+	-d|--desktops) TARGET=${DESKTOPS} ;;
+	-l|--list) TARGET=`echo $@ |cut -d' ' -f2-` ;;
 	*) echo "unknown option"
 	    exit 1;;
     esac
 
     ## remote magic
-    SSHELL="ssh -o"
+    SSHELL="ssh -x -o"
     KEYCHECK="StrictHostKeyChecking no"
+    TARGET=`echo ${TARGET} |tr '[:upper:]' '[:lower:]'`
     for host in ${TARGET}
     do
     	case "$host" in
@@ -141,9 +140,9 @@ then
 		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
 		echo -n "."
 		;;
-	    CSEESYSTEMS*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
+	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
 		echo -n "."
-		# ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
 		echo -n "."
 		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
