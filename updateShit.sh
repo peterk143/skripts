@@ -14,10 +14,12 @@ bold() {
 }
 
 usage() {
-    echo -e "Usage: ${0} [`bold --servers` | `bold --desktops`]"
+    echo -e "Usage: ${0} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]"
     echo ""
-    echo "     `bold -s`|`bold --servers`     update all servers"
-    echo "     `bold -d`|`bold --desktops`    update all desktops"
+    echo "     `bold -l`|`bold --list`=hosts    specify which machines to update"
+    echo ""
+    echo "     `bold -s`|`bold --servers`       update all servers"
+    echo "     `bold -d`|`bold --desktops`      update all desktops"
     echo ""
     echo "     `bold --list-servers`     list all available servers"
     echo "     `bold --list-desktops`    list all available desktops"
