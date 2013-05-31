@@ -39,23 +39,23 @@ elif [ "${1}" = "--help" -o "${1}" = "-h" ]; then
     exit 0
 fi
 
-MACHINES="dmzshell001
+MACHINES="nagios001
+nagios002
+dmzshell001
 dmzshell002
 dmzshell003
 dmzshell004
+imageserver001
+imageserver002
 dmzlegacyshell001
 dmzlegacyshell002
-nagios001
-nagios002
 tnode001
 fileserver001
 fileserver002
 fileserver003
 fileserver004
 fileserver005
-fileserver006
-imageserver001
-imageserver002"
+fileserver006"
 
 DESKTOPS="CSEESYSTEMS01
 CSEESYSTEMS03
@@ -135,18 +135,25 @@ then
     KEYCHECK="StrictHostKeyChecking no"
     for host in ${TARGET}
     do
-	echo ${host}
+	echo -n "||"
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+		echo -n "."
 		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo -n "."
 		;;
 	    CSEESYSTEMS*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
+		echo -n "."
 		# ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo -n "."
 		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+		echo -n "."
     		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo -n "."
     		;;
     	esac
+	echo -n ">"
     done
 
     `${CLEAN}`
