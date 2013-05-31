@@ -135,9 +135,9 @@ then
     for host in ${TARGET}
     do
     	case "$host" in
-    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
 		echo -n "."
-		${SSHELL} "${KEYCHECK}" -p 20110 ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
 		echo -n "."
 		;;
 	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
@@ -145,9 +145,9 @@ then
 		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
 		echo -n "."
 		;;
-    	    *) ${RSYNC_OPTS} ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
+    	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
 		echo -n "."
-    		${SSHELL} "${KEYCHECK}" ${host}.lcsee.wvu.edu "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
 		echo -n "."
     		;;
     	esac
