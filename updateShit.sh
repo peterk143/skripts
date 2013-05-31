@@ -135,7 +135,6 @@ then
     KEYCHECK="StrictHostKeyChecking no"
     for host in ${TARGET}
     do
-	echo -n "||"
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}.lcsee.wvu.edu:/tmp 
 		echo -n "."
@@ -153,7 +152,6 @@ then
 		echo -n "."
     		;;
     	esac
-	echo -n ">"
     done
 
     `${CLEAN}`
@@ -161,7 +159,7 @@ then
     ## elapsed time
     FIN="$(date +%s)"
     TIME="$(expr ${FIN} - ${START})"
-    echo `date -u -d @${TIME} +"%M:%S"`" elapsed"
+    echo -e "\n"`date -u -d @${TIME} +"%M:%S"`" elapsed"
     echo "crescent fresh!"
 else
     echo "do you even keys, br0?"
