@@ -14,18 +14,21 @@ bold() {
 }
 
 usage() {
-    echo -e "Usage: ${0} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]"
-    echo ""
-    echo "     `bold -l`|`bold --list`=hosts    specify which machines to update"
-    echo ""
-    echo "     `bold -s`|`bold --servers`       update all servers"
-    echo "     `bold -d`|`bold --desktops`      update all desktops"
-    echo ""
-    echo "     `bold --list-servers`     list all available servers"
-    echo "     `bold --list-desktops`    list all available desktops"
-    echo ""
-    echo "     `bold Example`:"
-    echo -e "     ${0} --desktops"
+cat <<EOF
+
+  Usage: ${0} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]
+
+    `bold -l`|`bold --list`=hosts          specify which machines to update
+
+    `bold -s`|`bold --servers`             update all servers
+    `bold -d`|`bold --desktops`            update all desktops
+
+    `bold --list-servers`           list all available servers
+    `bold --list-desktops`          list all available desktops
+
+        `bold Example`:
+            ${0} --desktops
+EOF
 }
 
 if [ $# -ne 1 ]; then
