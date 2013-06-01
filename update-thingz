@@ -8,12 +8,10 @@
 ## the elapsed time in MM:SS
 
 ## MUST be ran from a machine with routes to all hosts
-
+BASE=`basename ${0}`
 bold() {
     echo -e "\033[1m${1}\033[0m"
 }
-
-BASE=`basename ${0}`
 
 usage() {
 cat <<EOF
