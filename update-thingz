@@ -29,9 +29,9 @@ cat <<EOF
     `bold --list-desktops`          list all available desktops
 
         `bold Example`:
-            ${BASH} --desktops
-            ${BASH} --list-servers
-            ${BASH} --list cseesystems01 nagios002 resolver001
+            ${BASE} --desktops
+            ${BASE} --list-servers
+            ${BASE} --list cseesystems01 nagios002 resolver001
 EOF
 }
 
