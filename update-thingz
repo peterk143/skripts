@@ -28,6 +28,8 @@ cat <<EOF
 
         `bold Example`:
             ${0} --desktops
+            ${0} --list-servers
+            ${0} --list cseesystems01 nagios002 resolver001
 EOF
 }
 
