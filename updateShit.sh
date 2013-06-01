@@ -31,7 +31,10 @@ cat <<EOF
 EOF
 }
 
-if [ "${1}" = "--help" -o "${1}" = "-h" ]; then
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+elif [ "${1}" = "--help" -o "${1}" = "-h" ]; then
     usage
     exit 0
 fi
