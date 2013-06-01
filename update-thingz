@@ -13,10 +13,12 @@ bold() {
     echo -e "\033[1m${1}\033[0m"
 }
 
+BASE=`basename ${0}`
+
 usage() {
 cat <<EOF
 
-  Usage: ${0} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]
+  Usage: ${BASE} [--servers | --desktops] [-l `bold \<hosts\>` | --list `bold \<hosts\>`]
 
     `bold -l`|`bold --list` hosts          specify which machines to update
 
@@ -27,9 +29,9 @@ cat <<EOF
     `bold --list-desktops`          list all available desktops
 
         `bold Example`:
-            ${0} --desktops
-            ${0} --list-servers
-            ${0} --list cseesystems01 nagios002 resolver001
+            ${BASH} --desktops
+            ${BASH} --list-servers
+            ${BASH} --list cseesystems01 nagios002 resolver001
 EOF
 }
 
