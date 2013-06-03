@@ -70,12 +70,12 @@ cseesystems09"
 
 if [ "${1}" == "--list-servers" ]; then
     for node in ${MACHINES}; do
-	echo "   " ${node}
+	echo "   ${node}"
     done
     exit 0
 elif [ "${1}" == "--list-desktops" ]; then
     for instance in ${DESKTOPS}; do
-	echo "   " ${instance}
+	echo "   ${instance}"
     done
     exit 0
 fi
@@ -131,7 +131,7 @@ if [ $? -eq 0 ]; then
 		exit 1
 	    fi ;;
 	*) echo "unknown option"
-	    exit 1;;
+	    exit 1 ;;
     esac
     
     ## dot check && file prep
