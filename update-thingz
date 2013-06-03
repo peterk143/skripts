@@ -16,23 +16,23 @@ bold() {
 usage() {
 cat <<EOF
 
-  Usage: ${BASE} [--servers | --desktops] [-l | --list `bold HOSTS...`]
-                       [-h | --hosts] `bold FILE` [-c | --config] `bold FILE`
+  Usage: ${BASE} [-s | --servers] [-d | --desktops] [-l | --list `bold HOSTS...`]
+                       [-D | --list-desktops] [-S | --list-servers]
+                       [-H | --hosts] `bold FILE` [-C | --config] `bold FILE` [-h | --help]
+    -Options-
 
-    `bold -l`|`bold --list` HOSTS...       specify which machines to update
-
-    `bold -s`|`bold --servers`             update all servers
-    `bold -d`|`bold --desktops`            update all desktops
-
-    `bold -H`|`bold --hosts` FILE          read hosts from FILE
-    `bold -C`|`bold --config` File         read configs from FILE
-
-    `bold --list-servers`           list all available servers
-    `bold --list-desktops`          list all available desktops
+    `bold -C`, `bold --config` File           read configs from FILE
+    `bold -d`, `bold --desktops`              update all desktops
+    `bold -D`, `bold --list-desktops`         list all available desktops
+    `bold -h`, `bold --help`                  display usage
+    `bold -H`, `bold --hosts` FILE            read hosts from FILE
+    `bold -l`, `bold --list` HOSTS...         specify which machines to update
+    `bold -s`, `bold --servers`               update all servers
+    `bold -S`, `bold --list-servers`          list all available servers
 
         `bold Example`:
             ${BASE} --desktops
-            ${BASE} --list-servers
+            ${BASE} -H asdf.txt -C hjkl.txt
             ${BASE} --list cseesystems01 nagios002 resolver001
 EOF
 }
