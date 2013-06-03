@@ -110,22 +110,6 @@ START="$(date +%s)"
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
-    if [ "${1}" == "-H" -o "${1}" == "--hosts" ]
-    then
-	echo ${2}
-	if [ $# == 4 ]
-	then
-	    if [ "${3}" == "-C" -o "${3}" == "--config" ] 
-	    then
-		echo ${4}
-		exit 0
-	    fi
-	else
-	    echo "incorrect number of arguments"
-	    exit 1
-	fi
-    fi
-
     ## dotfile check
     if [ -d /cloudhome/$USER/dotfiles ]
     then
@@ -149,6 +133,19 @@ then
 	-s|--servers) TARGET=${MACHINES} ;;
 	-d|--desktops) TARGET=${DESKTOPS} ;;
 	-l|--list) TARGET=`echo $@ |cut -d' ' -f2-` ;;
+	-H|--hosts) if [ $# == 4 ]
+                    then
+                        if [ "${3}" == "-C" -o "${3}" == "--config" ] 
+			then
+			    echo ${4}
+			else
+			    echo "try -C instead of ${3}"
+			    exit 1
+			fi
+                    else
+                        echo "incorrect number of arguments"
+			exit 1
+                    fi ;;
 	*) echo "unknown option"
 	    exit 1;;
     esac
