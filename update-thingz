@@ -37,10 +37,7 @@ usage() {
 EOF
 }
 
-if [ $# -eq 0 ]; then
-    usage
-    exit 0
-elif [ "${1}" == "-h" -o "${1}" == "--help" ]; then
+if [ "${1}" == "-h" -o "${1}" == "--help" -o $# -eq 0 ]; then
     usage
     exit 0
 fi
@@ -134,18 +131,18 @@ then
 	-d|--desktops) TARGET=${DESKTOPS} ;;
 	-l|--list) TARGET=`echo $@ |cut -d' ' -f2-` ;;
 	-H|--hosts) if [ $# == 4 ]
-                    then
-                        if [ "${3}" == "-C" -o "${3}" == "--config" ] 
-			then
-			    echo ${4}
-			else
-			    echo "try -C instead of ${3}"
-			    exit 1
-			fi
-                    else
-                        echo "incorrect number of arguments"
-			exit 1
-                    fi ;;
+then
+    if [ "${3}" == "-C" -o "${3}" == "--config" ] 
+    then
+	echo ${4}
+    else
+	echo "try -C instead of ${3}"
+	exit 1
+    fi
+else
+    echo "incorrect number of arguments"
+    exit 1
+    fi ;;
 	*) echo "unknown option"
 	    exit 1;;
     esac
@@ -158,15 +155,15 @@ then
     do
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
-	    echo -n "."
-	    ${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-	    echo -n "."
-	    ;;
+		echo -n "."
+		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo -n "."
+		;;
 	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
-	    echo -n "."
-	    ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-	    echo -n "."
-	    ;;
+		echo -n "."
+		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+		echo -n "."
+		;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
 	    echo -n "."
     	    ${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
