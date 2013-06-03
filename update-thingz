@@ -111,28 +111,29 @@ if [ $? -eq 0 ]; then
 	-s|--servers) TARGET=${MACHINES} ;;
 	-d|--desktops) TARGET=${DESKTOPS} ;;
 	-l|--list) TARGET=`echo $@ |cut -d' ' -f2-` ;;
-	-H|--hosts) if [ $# -eq 4 ]; then
-    if [ "${3}" == "-C" -o "${3}" == "--config" ]; then
-	if [ -r ${2} -a -r ${4} ]; then
-	    echo "good files"
-	    TARGET=$(cat ${2})
-	    DOTS=$(cat ${4})
-	else
-	    echo "cannot open/read files"
-	    exit 1
-	fi
-    else
-	echo "try -C instead of ${3}"
-	exit 1
-    fi 
-else 
-    echo "incorrect number of arguments"
-    exit 1
-fi ;;
+	-H|--hosts) 
+	    if [ $# -eq 4 ]; then
+		if [ "${3}" == "-C" -o "${3}" == "--config" ]; then
+		    if [ -r ${2} -a -r ${4} ]; then
+			echo "good files"
+			TARGET=$(cat ${2})
+			DOTS=$(cat ${4})
+		    else
+			echo "cannot open/read files"
+			exit 1
+		    fi
+		else
+		    echo "try -C instead of ${3}"
+		    exit 1
+		fi 
+	    else 
+		echo "incorrect number of arguments"
+		exit 1
+	    fi ;;
 	*) echo "unknown option"
 	    exit 1;;
     esac
-
+    
     ## dot check && file prep
     mkdir -p ${TMP}
     if [ -d "${DOTS}" ]; then
@@ -180,8 +181,7 @@ fi ;;
     TIME="$(expr ${FIN} - ${START})"
     echo -e "\n"`date -u -d @${TIME} +"%M:%S"`" elapsed"
     echo "crescent fresh!"
-    else
+else
     echo "do you even keys, br0?"
     exit 1
-    fi
-    
+fi
