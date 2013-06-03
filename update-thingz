@@ -133,25 +133,19 @@ fi ;;
 	    exit 1;;
     esac
 
-    ## dotfile check
-    if [ -z ${DOTS} ]; then
-	if [ -d /cloudhome/$USER/dotfiles ]; then
-	    DOTS="/cloudhome/$USER/dotfiles"
-	else
-	    echo "you need some dot files, br0"
-	    exit 1
-	fi
-    fi
-
-    ## file prep
+    ## dot check && file prep
     mkdir -p ${TMP}
-    if [ -d ${DOTS} ]; then
+    if [ -d "${DOTS}" ]; then
 	for file in ${FILES}; do
 	    cp -R ${DOTS}/${file} ${TMP}
+	    echo "dotfile dir"
+	    echo "${DOTS}"
 	done
-    elif [ -n ${DOTS} ]; then
-	for file in ${FILES}; do
-	    cp -R ${DOTS} ${TMP}
+    elif [ -n "${DOTS}" ]; then
+	for file in ${DOTS}; do
+	    cp -R ${file} ${TMP}
+	    echo "dots read in from file"
+	    echo "${file}"
 	done	
     fi
 
@@ -165,17 +159,17 @@ fi ;;
     for host in ${TARGET}; do
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
-		echo -n "."
-		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "." ;;
-	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
-		echo -n "."
-		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "." ;;
+    		echo -n "."
+    		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		echo -n "." ;;
+    	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
+    		echo -n "."
+    		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		echo -n "." ;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
-		echo -n "."
+    		echo -n "."
     		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "." ;;
+    		echo -n "." ;;
     	esac
     done
 
