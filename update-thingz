@@ -143,6 +143,9 @@ then
 	echo "try -C instead of ${3}"
 	exit 1
     fi 
+else 
+    echo "incorrect number of arguments"
+    exit 1
 fi ;;
 	*) echo "unknown option"
 	    exit 1;;
