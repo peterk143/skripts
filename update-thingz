@@ -14,7 +14,7 @@ bold() {
 }
 
 usage() {
-cat <<EOF
+    cat <<EOF
 
   Usage: ${BASE} [-s | --servers] [-d | --desktops] [-l | --list `bold HOSTS...`]
                        [-D | --list-desktops] [-S | --list-servers]
@@ -110,25 +110,21 @@ START="$(date +%s)"
 CHECK=`ssh-add -l`
 if [ $? -eq 0 ]
 then
-    if [ $# == 4 ]
+    if [ "${1}" == "-H" -o "${1}" == "--hosts" ]
+    then
+	echo ${2}
+	if [ $# == 4 ]
 	then
-	if [ "${1}" == "-H" -o "${1}" == "--hosts" ]
-	then
-	    echo ${2}
-	fi
-	if [ "${3}" == "-C" -o "${3}" == "--config" ] 
-	then
-	    echo ${4}
-	    exit 0
+	    if [ "${3}" == "-C" -o "${3}" == "--config" ] 
+	    then
+		echo ${4}
+		exit 0
+	    fi
 	else
-	    echo "improper input"
+	    echo "incorrect number of arguments"
 	    exit 1
 	fi
-    else
-	echo "eat a dick"
-	exit 1	
     fi
-
 
     ## dotfile check
     if [ -d /cloudhome/$USER/dotfiles ]
@@ -165,20 +161,20 @@ then
     do
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
-		echo -n "."
-		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-		;;
+	    echo -n "."
+	    ${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+	    echo -n "."
+	    ;;
 	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
-		echo -n "."
-		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-		;;
+	    echo -n "."
+	    ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+	    echo -n "."
+	    ;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
-		echo -n "."
-    		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-    		;;
+	    echo -n "."
+    	    ${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+	    echo -n "."
+    	    ;;
     	esac
     done
 
