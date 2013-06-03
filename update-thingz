@@ -32,7 +32,7 @@ usage() {
 
         `bold Example`:
             ${BASE} --desktops
-            ${BASE} -H asdf.txt -C hjkl.txt
+            ${BASE} -H hosts.txt -C configs.txt
             ${BASE} --list cseesystems01 nagios002 resolver001
 EOF
 }
@@ -105,28 +105,8 @@ START="$(date +%s)"
 
 ## ssh key check
 CHECK=`ssh-add -l`
-if [ $? -eq 0 ]
-then
-    ## dotfile check
-    if [ -d /cloudhome/$USER/dotfiles ]
-    then
-	DOTS="/cloudhome/$USER/dotfiles"
-    else
-	echo "you need the dotfile dir, br0"
-	exit 1
-    fi
-
-    ## file prep
-    mkdir -p ${TMP}
-    for file in ${FILES}
-    do
-	cp -R ${DOTS}/${file} ${TMP}
-    done
-
-    ## compression
-    tar -czPf ${ZIP} ${TMP}
-
-    ## inputs
+if [ $? -eq 0 ]; then
+    ## check inputs
     case "$1" in
 	-s|--servers) TARGET=${MACHINES} ;;
 	-d|--desktops) TARGET=${DESKTOPS} ;;
@@ -135,6 +115,8 @@ then
     if [ "${3}" == "-C" -o "${3}" == "--config" ]; then
 	if [ -r ${2} -a -r ${4} ]; then
 	    echo "good files"
+	    TARGET=$(cat ${2})
+	    DOTS=$(cat ${4})
 	else
 	    echo "cannot open/read files"
 	    exit 1
@@ -151,28 +133,49 @@ fi ;;
 	    exit 1;;
     esac
 
+    ## dotfile check
+    if [ -z ${DOTS} ]; then
+	if [ -d /cloudhome/$USER/dotfiles ]; then
+	    DOTS="/cloudhome/$USER/dotfiles"
+	else
+	    echo "you need some dot files, br0"
+	    exit 1
+	fi
+    fi
+
+    ## file prep
+    mkdir -p ${TMP}
+    if [ -d ${DOTS} ]; then
+	for file in ${FILES}; do
+	    cp -R ${DOTS}/${file} ${TMP}
+	done
+    elif [ -n ${DOTS} ]; then
+	for file in ${FILES}; do
+	    cp -R ${DOTS} ${TMP}
+	done	
+    fi
+
+    ## compression
+    tar -czPf ${ZIP} ${TMP}
+
     ## remote magic
     SSHELL="ssh -x -o"
     KEYCHECK="StrictHostKeyChecking no"
     TARGET=`echo ${TARGET} |tr '[:upper:]' '[:lower:]'`
-    for host in ${TARGET}
-    do
+    for host in ${TARGET}; do
     	case "$host" in
     	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
 		echo -n "."
 		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-		;;
+		echo -n "." ;;
 	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
 		echo -n "."
 		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-		;;
+		echo -n "." ;;
     	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
 		echo -n "."
     		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-		echo -n "."
-    		;;
+		echo -n "." ;;
     	esac
     done
 
@@ -187,3 +190,4 @@ fi ;;
     echo "do you even keys, br0?"
     exit 1
     fi
+    
