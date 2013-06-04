@@ -17,8 +17,8 @@ usage() {
     cat <<EOF
 
   Usage: ${BASE} [-s | --servers] [-d | --desktops] [-l | --list `bold HOSTS...`]
-                       [-D | --list-desktops] [-S | --list-servers]
-                       [-H | --hosts] `bold FILE` [-C | --config] `bold FILE` [-h | --help]
+                      [-D | --list-desktops] [-S | --list-servers]
+                      [-H | --hosts] `bold FILE` [-C | --config] `bold FILE` [-h | --help]
     -Options-
 
     `bold -C`, `bold --config` File           read configs from FILE
@@ -94,6 +94,7 @@ RSYNC_OPTS="rsync -az"
 UNTAR="tar -xzmPf ${ZIP} && \
 mkdir -p /home/$USER/.ssh"
 CLEAN="rm -rf ${TMP} ${ZIP}"
+DOTS="/cloudhome/$USER/dotfiles"
 MOVE="mv ${TMP}/.bashrc /home/$USER/ && \
 mv ${TMP}/config /home/$USER/.ssh/ && \
 mv ${TMP}/.bash_aliases /home/$USER/ && \
@@ -116,8 +117,8 @@ if [ $? -eq 0 ]; then
 		if [ "${3}" == "-C" -o "${3}" == "--config" ]; then
 		    if [ -r ${2} -a -r ${4} ]; then
 			echo "good files"
-			TARGET=$(cat ${2})
-			DOTS=$(cat ${4})
+			TARGET=`cat ${2}`
+			DOTS=`cat ${4}`
 		    else
 			echo "cannot open/read files"
 			exit 1
@@ -134,19 +135,15 @@ if [ $? -eq 0 ]; then
 	    exit 1 ;;
     esac
     
-    ## dot check && file prep
+    ## file prep
     mkdir -p ${TMP}
     if [ -d "${DOTS}" ]; then
 	for file in ${FILES}; do
 	    cp -R ${DOTS}/${file} ${TMP}
-	    echo "dotfile dir"
-	    echo "${DOTS}"
 	done
     elif [ -n "${DOTS}" ]; then
 	for file in ${DOTS}; do
 	    cp -R ${file} ${TMP}
-	    echo "dots read in from file"
-	    echo "${file}"
 	done	
     fi
 
@@ -158,20 +155,32 @@ if [ $? -eq 0 ]; then
     KEYCHECK="StrictHostKeyChecking no"
     TARGET=`echo ${TARGET} |tr '[:upper:]' '[:lower:]'`
     for host in ${TARGET}; do
-    	case "$host" in
-    	    dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
-    		echo -n "."
-    		${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-    		echo -n "." ;;
-    	    cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
-    		echo -n "."
-    		ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-    		echo -n "." ;;
-    	    *) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
-    		echo -n "."
-    		${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
-    		echo -n "." ;;
-    	esac
+	## were dotfiles supplied by user?
+	if [ -d "${DOTS}" ]; then
+    	    case "$host" in
+    		dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/tmp 
+    		    echo -n "."
+    		    ${SSHELL} "${KEYCHECK}" -p 20110 ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		    echo -n "." ;;
+    		cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp
+    		    echo -n "."
+    		    ssh ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		    echo -n "." ;;
+    		*) ${RSYNC_OPTS} ${ZIP} ${host}:/tmp 
+    		    echo -n "."
+    		    ${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
+    		    echo -n "." ;;
+    	    esac
+	else
+	    case "$host" in
+    		dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/home/$USER/
+    		    echo -n "." ;;
+    		cseesystems*) ${RSYNC_OPTS} ${ZIP} ${host}:/home/$USER/
+    		    echo -n "." ;;
+    		*) ${RSYNC_OPTS} ${ZIP} ${host}:/home/$USER/
+    		    echo -n "." ;;
+    	    esac
+	fi
     done
 
     `${CLEAN}`
