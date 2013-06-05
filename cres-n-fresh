@@ -21,7 +21,7 @@ usage() {
                       [-H | --hosts] `bold FILE` [-C | --config] `bold FILE` [-h | --help]
     -Options-
 
-    `bold -C`, `bold --config` File           read configs from FILE
+    `bold -C`, `bold --config` FILE           read configs from FILE
     `bold -d`, `bold --desktops`              update all desktops
     `bold -D`, `bold --list-desktops`         list all available desktops
     `bold -h`, `bold --help`                  display usage
