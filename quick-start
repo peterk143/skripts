@@ -44,6 +44,11 @@ if [ $? -eq 0 ]; then
     ln -s /cloudhome/${USER}/.gconf ~/
 fi
 
+## set time clock
+for var in show-date show-day show-seconds; do
+    gsettings set com.canonical.indicator.datetime ${var} true
+done
+
 ## set global git variables
 GIT=`git --version`
 if [ $? -eq 0 ]; then
