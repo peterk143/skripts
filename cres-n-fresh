@@ -171,7 +171,7 @@ if [ $? -eq 0 ]; then
     		    ${SSHELL} "${KEYCHECK}" ${host} "${UNTAR} && ${MOVE} && ${CLEAN}"
     		    echo -n "." ;;
     	    esac
-	else
+	else ## if so...
 	    case "$host" in
     		dmzshell*) ${RSYNC_OPTS} -e "${SSHELL} \"${KEYCHECK}\" -p 20110" ${ZIP} ${host}:/home/$USER/
     		    echo -n "." ;;
