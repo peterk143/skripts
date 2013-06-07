@@ -151,7 +151,7 @@ if [ $? -eq 0 ]; then
     tar -czPf ${ZIP} ${TMP}
 
     ## remote magic
-    SSHELL="ssh -x -o"
+    SSHELL="ssh -q -x -o"
     KEYCHECK="StrictHostKeyChecking no"
     TARGET=`echo ${TARGET} |tr '[:upper:]' '[:lower:]'`
     for host in ${TARGET}; do
