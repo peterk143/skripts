@@ -5,4 +5,4 @@ various utilities
 
 
 **RFEs**
-* create a backup script
+* create a backup script *(iss#12)*
