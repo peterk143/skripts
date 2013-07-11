@@ -26,6 +26,11 @@ if ! [ -h /home/${USER}/.weechat ]; then
     ln -s /cloudhome/${USER}/.weechat /home/${USER}/
 fi
 
+## create link to .emacs
+if ! [ -h /home/${USER}/.emacs ]; then
+    ln -s /cloudhome/${USER}/.emacs home/${USER}
+fi
+
 ## set background
 result=`pgrep X`
 if [ $? -eq 0 ]; then 
