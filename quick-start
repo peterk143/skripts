@@ -28,7 +28,7 @@ fi
 
 ## create link to .emacs
 if ! [ -h /home/${USER}/.emacs ]; then
-    ln -s /cloudhome/${USER}/.emacs home/${USER}
+    ln -s /cloudhome/${USER}/.emacs /home/${USER}
 fi
 
 ## set background
