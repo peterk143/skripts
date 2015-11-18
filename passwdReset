@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # determine the OS
-# use a switch statement to determine commands
+# use a switch statement to determine command
 
 GROUPS=$(getent group |grep -i admin)
 echo $GROUPS
@@ -10,7 +10,7 @@ OS=$(uname -o)
 
 case $OS in
     GNU/Linux)
-	echo "OS is GNU/Linux"
+	echo "OS is $OS"
 #	reset user passwd
 	;;
 #   Solaris)
