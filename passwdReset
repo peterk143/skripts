@@ -3,11 +3,15 @@
 # determine the OS
 # use a switch statement to determine commands
 
+GROUPS=$(getent group |grep -i admin)
+echo $GROUPS
+
 OS=$(uname -o)
 
 case $OS in
     GNU/Linux)
 	echo "OS is GNU/Linux"
+#	reset user passwd
 	;;
 #   Solaris)
 #	;;
