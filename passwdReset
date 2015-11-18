@@ -2,3 +2,11 @@
 
 # determine the OS
 # use a switch statement to determine commands
+
+OS=$(uname -o)
+
+case $OS in
+    GNU/Linux)
+	echo "OS is GNU/Linux"
+	;;
+esac
