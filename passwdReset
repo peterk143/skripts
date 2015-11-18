@@ -15,8 +15,8 @@ case $OS in
 	;;
 #   Solaris)
 #	;;
-#   RHEL
+#   RHEL)
 #	;;
-#   SuSe
+#   SuSe)
 #	;;
 esac
