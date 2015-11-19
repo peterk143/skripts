@@ -22,3 +22,5 @@ case $OS in
 #   SuSe)
 #	;;
 esac
+
+exit 0
