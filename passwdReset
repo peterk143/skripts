@@ -6,6 +6,8 @@
 GROUP=$(egrep -i "svadmin |carpadmin" /etc/group)
 echo $GROUP
 
+USERS=$(grep -i "GROUP" /etc/groups)
+
 OS=$(uname -o)
 
 case $OS in
