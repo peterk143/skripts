@@ -3,10 +3,10 @@
 # determine the OS
 # use a switch statement to determine command
 
-GROUP=$(egrep -i "svadmin |carpadmin" /etc/group)
+GROUP=$(egrep -i "svadmin |carpadmin |sudo" /etc/group)
 echo $GROUP
 
-USERS=$(grep -i "GROUP" /etc/groups)
+USERS=$(grep -i "GROUP" /etc/group)
 
 OS=$(uname -o)
 
