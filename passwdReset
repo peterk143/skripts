@@ -3,6 +3,8 @@
 # determine the OS
 # use a switch statement to determine command
 
+## ISS00: determine what the OS is
+
 GROUP=$(egrep -i "svadmin |carpadmin |sudo" /etc/group)
 echo $GROUP
 
