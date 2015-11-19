@@ -23,5 +23,8 @@ case $OS in
 #	;;
     *)
 	echo "$OS is unsupported at this time!"
+	exit 1
 	;;
 esac
+
+exit 0
