@@ -19,4 +19,7 @@ case $OS in
 #	;;
 #   SuSe)
 #	;;
+    *)
+	echo "$OS is unsupported at this time!"
+	;;
 esac
