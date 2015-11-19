@@ -4,6 +4,7 @@
 # use a switch statement to determine command
 
 GROUP=$(egrep -i "svadmin |carpadmin" /etc/group)
+echo $GROUP
 
 OS=$(uname -o)
 
