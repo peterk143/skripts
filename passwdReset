@@ -3,6 +3,8 @@
 # determine the OS
 # use a switch statement to determine command
 
+## ISS01: format user list
+
 GROUPS=$(getent group |grep -i admin)
 echo $GROUPS
 
